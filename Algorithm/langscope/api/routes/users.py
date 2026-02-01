@@ -242,7 +242,9 @@ async def upload_avatar(
     unique_name = f"{uuid.uuid4()}.{ext}"
     
     # For now, store locally (in production, use S3/CloudFlare R2)
-    upload_dir = os.path.join(os.getcwd(), "uploads", "avatars", user.user_id)
+    # Use path relative to this file for consistency
+    algorithm_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    upload_dir = os.path.join(algorithm_dir, "uploads", "avatars", user.user_id)
     os.makedirs(upload_dir, exist_ok=True)
     
     file_path = os.path.join(upload_dir, unique_name)

@@ -206,7 +206,11 @@ Rate limit headers are included in all responses.
     app.include_router(graphql_router, prefix="/graphql")
     
     # Mount static files for uploads (avatars, logos, etc.)
-    uploads_dir = os.path.join(os.getcwd(), "uploads")
+    # Use path relative to this file to ensure consistency regardless of cwd
+    # main.py is at: Algorithm/langscope/api/main.py
+    # uploads is at: Algorithm/uploads
+    algorithm_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    uploads_dir = os.path.join(algorithm_dir, "uploads")
     os.makedirs(uploads_dir, exist_ok=True)
     app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
     

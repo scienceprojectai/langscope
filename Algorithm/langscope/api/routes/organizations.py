@@ -478,8 +478,10 @@ async def upload_org_logo(
             )
         
         # Save file
+        # Use path relative to this file for consistency
         ext = file.filename.split(".")[-1] if file.filename else "png"
-        upload_dir = os.path.join(os.getcwd(), "uploads", "logos", org_id)
+        algorithm_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        upload_dir = os.path.join(algorithm_dir, "uploads", "logos", org_id)
         os.makedirs(upload_dir, exist_ok=True)
         
         filename = f"{uuid.uuid4()}.{ext}"
