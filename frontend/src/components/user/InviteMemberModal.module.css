@@ -1,86 +1,80 @@
+/**
+ * Invite Member Modal Styles
+ * Matches RegisterModelWizard lightbox style
+ */
+
 .overlay {
   position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: var(--spacing-md);
-  backdrop-filter: blur(2px);
+  padding: 1rem;
 }
 
 .modal {
-  background: var(--color-paper, #fffef8);
+  background: var(--color-paper);
   border-radius: var(--radius-lg);
-  border: 3px solid var(--color-ink, #333);
+  border: 2px solid var(--color-ink);
   width: 100%;
-  max-width: 450px;
-  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.15);
-  position: relative;
+  max-width: 480px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-hover);
 }
 
-/* Add sketch paper texture effect */
-.modal::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: 
-    linear-gradient(90deg, transparent 0%, transparent 98%, var(--color-grid, #e8e8e8) 98%),
-    linear-gradient(var(--color-grid, #e8e8e8) 1px, transparent 1px);
-  background-size: 20px 20px;
-  opacity: 0.3;
-  pointer-events: none;
-  border-radius: var(--radius-lg);
-}
-
+/* Header */
 .header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-md) var(--spacing-lg);
-  border-bottom: 2px dashed var(--color-grid-dark, #ccc);
-  background: var(--color-sticky-blue, #e3f2fd);
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  position: relative;
-  z-index: 1;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 2px dashed var(--color-grid);
 }
 
 .title {
-  font-family: var(--font-title, 'Patrick Hand', cursive);
-  font-size: 1.3rem;
-  font-weight: bold;
+  font-size: 1.35rem;
+  font-weight: 700;
   margin: 0;
-  color: var(--color-ink, #333);
+  font-family: var(--font-main);
+  color: var(--color-ink);
 }
 
 .closeButton {
-  width: 32px;
-  height: 32px;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--color-grid-dark);
+  background: var(--color-paper);
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--color-pencil);
+  border-radius: 50%;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: #666;
-  border-radius: var(--radius-sm);
-  transition: all var(--transition-fast);
 }
 
 .closeButton:hover {
-  background: var(--color-sticky-pink);
-  color: #333;
+  background: var(--color-paper-alt);
+  border-color: var(--color-ink);
+  color: var(--color-ink);
 }
 
+/* Form */
 .form {
-  padding: var(--spacing-lg);
-  position: relative;
-  z-index: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
 }
 
 .field {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: 1.5rem;
 }
 
 .label {
@@ -88,68 +82,74 @@
   font-family: var(--font-main);
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: var(--spacing-xs);
-  color: #333;
+  margin-bottom: 0.5rem;
+  color: var(--color-ink);
 }
 
 .input {
   width: 100%;
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-family: var(--font-secondary, 'Caveat', cursive);
-  font-size: 1.1rem;
-  border: 2px solid var(--color-grid-dark, #ccc);
-  border-radius: var(--radius-sm);
-  transition: border-color var(--transition-fast);
-  background: white;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-main);
+  font-size: 1rem;
+  border: 2px solid var(--color-grid-dark);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .input:focus {
   outline: none;
   border-color: var(--color-ink);
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sketch);
 }
 
 .input:disabled {
-  background: var(--color-paper-alt, #f5f5f0);
+  background: var(--color-paper-alt);
   cursor: not-allowed;
+}
+
+.input::placeholder {
+  color: var(--color-pencil);
+  opacity: 0.7;
 }
 
 .error {
   display: block;
-  margin-top: var(--spacing-xs);
-  font-family: var(--font-secondary);
+  margin-top: 0.5rem;
+  font-family: var(--font-main);
   font-size: 0.8rem;
-  color: #c62828;
+  color: #dc2626;
 }
 
 /* Role Options */
 .roleOptions {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-xs);
+  gap: 0.5rem;
 }
 
 .roleOption {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: 2px solid var(--color-grid-dark, #ccc);
-  border-radius: var(--radius-sm);
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--color-grid-dark);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
   cursor: pointer;
-  transition: all var(--transition-fast);
-  background: white;
+  text-align: left;
+  transition: all 0.2s ease;
 }
 
 .roleOption:hover {
-  border-color: var(--color-ink, #333);
-  transform: translateX(2px);
+  border-color: var(--color-ink);
+  box-shadow: var(--shadow-sketch);
 }
 
 .roleOption.selected {
-  border-color: var(--color-ink, #333);
-  background: var(--color-sticky-yellow, #fff9c4);
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.1);
+  border-color: var(--color-ink);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-sketch);
 }
 
 .roleOption input[type="radio"] {
@@ -167,20 +167,31 @@
 .roleName {
   font-family: var(--font-main);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  color: var(--color-ink);
 }
 
 .roleDesc {
-  font-family: var(--font-secondary);
-  font-size: 0.8rem;
-  color: #666;
+  font-family: var(--font-main);
+  font-size: 0.85rem;
+  color: var(--color-pencil);
+  margin-top: 0.125rem;
 }
 
 .checkIcon {
-  font-size: 1.2rem;
-  color: var(--color-ink);
+  font-size: 1.25rem;
+  color: var(--color-accent);
   opacity: 0;
-  transition: opacity var(--transition-fast);
+  transition: opacity 0.2s ease;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-accent);
+  border-radius: 50%;
+  color: white;
+  flex-shrink: 0;
 }
 
 .roleOption.selected .checkIcon {
@@ -190,49 +201,48 @@
 /* Actions */
 .actions {
   display: flex;
-  gap: var(--spacing-sm);
+  gap: 0.75rem;
   justify-content: flex-end;
-  padding-top: var(--spacing-md);
-  border-top: 2px dashed var(--color-grid-dark, #ccc);
-  margin-top: var(--spacing-md);
+  padding: 1rem 1.5rem;
+  border-top: 2px dashed var(--color-grid);
+  background: var(--color-paper-alt);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
 }
 
 .cancelButton,
 .submitButton {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-lg);
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
   font-family: var(--font-main);
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 600;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: all 0.2s ease;
 }
 
 .cancelButton {
-  background: white;
-  border: 2px solid var(--color-grid-dark, #ccc);
-  color: #666;
+  background: var(--color-paper);
+  border: 2px solid var(--color-grid-dark);
+  color: var(--color-pencil);
 }
 
 .cancelButton:hover:not(:disabled) {
-  background: var(--color-sticky-pink, #fce4ec);
-  border-color: var(--color-ink, #333);
-  transform: translateY(-1px);
+  border-color: var(--color-ink);
+  color: var(--color-ink);
+  transform: scale(1.02);
 }
 
 .submitButton {
-  background: var(--color-ink, #333);
-  border: 2px solid var(--color-ink, #333);
+  background: var(--color-accent);
+  border: 2px solid var(--color-ink);
   color: white;
 }
 
 .submitButton:hover:not(:disabled) {
-  background: #444;
-  transform: translateY(-1px);
-  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.2);
+  transform: scale(1.02);
 }
 
 .submitButton:disabled,
@@ -256,4 +266,28 @@
 
 .submitButton i.ph-spinner-gap {
   animation: spin 1s linear infinite;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .modal {
+    max-height: 95vh;
+    margin: 0.5rem;
+  }
+
+  .header,
+  .form {
+    padding: 1rem;
+  }
+
+  .actions {
+    padding: 1rem;
+    flex-direction: column;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+    justify-content: center;
+  }
 }
