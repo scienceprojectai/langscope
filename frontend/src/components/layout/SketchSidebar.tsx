@@ -3,6 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import { useAuthStore } from '@/store/authStore'
 import { useProfile } from '@/api/hooks'
+import { getAssetUrl } from '@/api/client'
 import styles from './SketchSidebar.module.css'
 
 interface NavItem {
@@ -62,6 +63,8 @@ export function SketchSidebar() {
   // Get user display name - prefer profile display_name, fallback to email prefix
   const userEmail = user?.email || ''
   const displayName = profile?.display_name || (userEmail ? userEmail.split('@')[0] : 'User')
+  const avatarUrl = getAssetUrl(profile?.avatar_url)
+  const initials = displayName.substring(0, 2).toUpperCase()
 
   return (
     <>
@@ -148,15 +151,21 @@ export function SketchSidebar() {
                 {isLoading ? 'Logging out...' : 'Logout'}
               </button>
             </li>
-            {/* User - link to user page, shows login name when logged in */}
+            {/* User - link to user page, shows avatar and name when logged in */}
             <NavLink
               to="/user"
               className={({ isActive }) =>
-                clsx(styles.navItem, isActive && styles.active)
+                clsx(styles.navItem, styles.userNavItem, isActive && styles.active)
               }
             >
               <li>
-                <i className="ph ph-user"></i>
+                {user && avatarUrl ? (
+                  <img src={avatarUrl} alt={displayName} className={styles.userAvatar} />
+                ) : user ? (
+                  <span className={styles.userInitials}>{initials}</span>
+                ) : (
+                  <i className="ph ph-user"></i>
+                )}
                 {user ? displayName : 'User'}
               </li>
             </NavLink>
