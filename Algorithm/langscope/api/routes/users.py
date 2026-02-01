@@ -243,7 +243,8 @@ async def upload_avatar(
     
     # For now, store locally (in production, use S3/CloudFlare R2)
     # Use path relative to this file for consistency
-    algorithm_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    # This file: Algorithm/langscope/api/routes/users.py -> go up 4 levels to Algorithm
+    algorithm_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
     upload_dir = os.path.join(algorithm_dir, "uploads", "avatars", user.user_id)
     os.makedirs(upload_dir, exist_ok=True)
     

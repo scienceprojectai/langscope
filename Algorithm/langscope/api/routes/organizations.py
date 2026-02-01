@@ -479,8 +479,9 @@ async def upload_org_logo(
         
         # Save file
         # Use path relative to this file for consistency
+        # This file: Algorithm/langscope/api/routes/organizations.py -> go up 4 levels to Algorithm
         ext = file.filename.split(".")[-1] if file.filename else "png"
-        algorithm_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        algorithm_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
         upload_dir = os.path.join(algorithm_dir, "uploads", "logos", org_id)
         os.makedirs(upload_dir, exist_ok=True)
         

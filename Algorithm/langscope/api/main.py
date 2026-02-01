@@ -207,7 +207,7 @@ Rate limit headers are included in all responses.
     
     # Mount static files for uploads (avatars, logos, etc.)
     # Use path relative to this file to ensure consistency regardless of cwd
-    # main.py is at: Algorithm/langscope/api/main.py
+    # main.py is at: Algorithm/langscope/api/main.py -> go up 3 levels to Algorithm
     # uploads is at: Algorithm/uploads
     algorithm_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     uploads_dir = os.path.join(algorithm_dir, "uploads")
