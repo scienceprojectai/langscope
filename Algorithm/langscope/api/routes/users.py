@@ -239,18 +239,18 @@ async def upload_avatar(
     
     # Generate unique filename
     ext = file.filename.split(".")[-1] if file.filename else "jpg"
-    filename = f"avatars/{user.user_id}/{uuid.uuid4()}.{ext}"
+    unique_name = f"{uuid.uuid4()}.{ext}"
     
     # For now, store locally (in production, use S3/CloudFlare R2)
     upload_dir = os.path.join(os.getcwd(), "uploads", "avatars", user.user_id)
     os.makedirs(upload_dir, exist_ok=True)
     
-    file_path = os.path.join(upload_dir, f"{uuid.uuid4()}.{ext}")
+    file_path = os.path.join(upload_dir, unique_name)
     with open(file_path, "wb") as f:
         f.write(contents)
     
-    # Generate URL (in production, this would be a CDN URL)
-    avatar_url = f"/uploads/{filename}"
+    # Generate URL (matches the static files mount path)
+    avatar_url = f"/uploads/avatars/{user.user_id}/{unique_name}"
     
     # Update user profile with avatar URL
     try:

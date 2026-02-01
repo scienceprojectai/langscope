@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { SketchCard, SketchButton } from '@/components/sketch'
 import { StickyNote } from '@/components/sticky'
 import { useAuthStore } from '@/store/authStore'
+import { getAssetUrl } from '@/api/client'
 import {
   useProfile,
   useUpdateProfile,
@@ -233,7 +234,7 @@ export function User() {
       <SketchCard padding="lg" className={styles.profileHeaderCard}>
         <div className={styles.profileHeader}>
           <ProfileImageUpload
-            currentImage={profile?.avatar_url}
+            currentImage={getAssetUrl(profile?.avatar_url)}
             initials={initials}
             onUpload={handleAvatarUpload}
             onRemove={profile?.avatar_url ? handleAvatarRemove : undefined}
@@ -657,7 +658,7 @@ export function User() {
                 <div className={styles.orgProfile}>
                   <div className={styles.orgLogo}>
                     {organization.logo_url ? (
-                      <img src={organization.logo_url} alt={organization.name} />
+                      <img src={getAssetUrl(organization.logo_url)} alt={organization.name} />
                     ) : (
                       <i className="ph ph-buildings"></i>
                     )}

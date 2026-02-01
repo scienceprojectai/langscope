@@ -141,5 +141,25 @@ export class ApiError extends Error {
 // Export singleton instance
 export const api = new ApiClient(API_BASE_URL)
 
+/**
+ * Get full URL for an uploaded asset (avatar, logo, etc.)
+ * Handles relative paths from the API that start with /uploads/
+ */
+export function getAssetUrl(path: string | null | undefined): string | undefined {
+  if (!path) return undefined
+  
+  // If already a full URL, return as-is
+  if (path.startsWith('http://') || path.startsWith('https://')) {
+    return path
+  }
+  
+  // If relative path starting with /, prepend API base URL
+  if (path.startsWith('/')) {
+    return `${API_BASE_URL}${path}`
+  }
+  
+  return path
+}
+
 // Re-export for direct usage
 export default api

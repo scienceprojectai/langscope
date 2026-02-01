@@ -22,6 +22,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 from langscope.api.schemas import HealthResponse, ErrorResponse
 from langscope.api.middleware import (
@@ -203,6 +204,11 @@ Rate limit headers are included in all responses.
     # Phase 15: GraphQL API
     graphql_router = get_graphql_router()
     app.include_router(graphql_router, prefix="/graphql")
+    
+    # Mount static files for uploads (avatars, logos, etc.)
+    uploads_dir = os.path.join(os.getcwd(), "uploads")
+    os.makedirs(uploads_dir, exist_ok=True)
+    app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
     
     # Root endpoint
     @app.get("/", tags=["root"])
