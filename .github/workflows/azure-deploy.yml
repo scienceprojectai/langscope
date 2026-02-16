@@ -59,12 +59,19 @@ jobs:
             --build-arg VITE_LOCAL_AUTH_MODE=true \
             ./frontend
 
-      - name: Deploy Frontend UI
-        uses: azure/container-apps-deploy-action@v1
+- name: Deploy Frontend UI (Direct CLI)
+        uses: azure/CLI@v1
         with:
-          containerAppName: langscope-ui
-          resourceGroup: LangScopeRG
-          containerAppEnvironment: LangScopeEnv
-          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }}
-          targetPort: 80
-          ingress: external
+          inlineScript: |
+            az config set extension.use_dynamic_install=yes_without_prompt
+            
+            # Create or Update the Container App directly
+            az containerapp create \
+              --name langscope-ui \
+              --resource-group LangScopeRG \
+              --environment LangScopeEnv \
+              --image ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }} \
+              --target-port 80 \
+              --ingress external \
+              --min-replicas 1 \
+              --max-replicas 1
