@@ -47,12 +47,17 @@ jobs:
             AZURE_STORAGE_CONN_STR=${{ secrets.AZURE_STORAGE_CONN }}
             NO_AUTH_MODE=true
 
-      # --- FRONTEND (UI) ---
+# --- FRONTEND (UI) ---
       - name: Build & Push Frontend
         run: |
           echo "VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }}" > ./frontend/.env
           echo "VITE_LOCAL_AUTH_MODE=true" >> ./frontend/.env
-          az acr build --registry ${{ secrets.ACR_LOGIN_SERVER }} --image frontend:${{ github.sha }} ./frontend
+          # Added --build-arg to handle potential environment issues
+          az acr build --registry ${{ secrets.ACR_LOGIN_SERVER }} \
+            --image frontend:${{ github.sha }} \
+            --build-arg VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }} \
+            --build-arg VITE_LOCAL_AUTH_MODE=true \
+            ./frontend
 
       - name: Deploy Frontend UI
         uses: azure/container-apps-deploy-action@v1
