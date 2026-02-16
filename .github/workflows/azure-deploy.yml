@@ -1,0 +1,65 @@
+name: LangScope Auto-Deploy
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Get Your Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # 2. Log in to Azure (Uses the Secret you just added)
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # 3. Log in to your Container Registry
+      - name: Login to ACR
+        run: az acr login --name ${{ secrets.ACR_LOGIN_SERVER }}
+
+      # --- BACKEND (ALGORITHM) ---
+      - name: Build & Push Backend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./Algorithm
+          push: true
+          # Tags the image with the specific commit ID so we know exactly what version is running
+          tags: ${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}
+
+      - name: Deploy Backend to Azure
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          name: langscope-api
+          resourceGroup: LangScopeRG
+          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}
+          # Injects your database keys securely
+          environmentVariables: |
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            AZURE_STORAGE_CONN_STR=${{ secrets.AZURE_STORAGE_CONN }}
+            NO_AUTH_MODE=true
+
+      # --- FRONTEND (UI) ---
+      - name: Build & Push Frontend
+        # We perform a trick here: we bake the API URL into the React app during the build
+        run: |
+          echo "VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }}" > ./frontend/.env
+          echo "VITE_LOCAL_AUTH_MODE=true" >> ./frontend/.env
+          
+          az acr build --registry ${{ secrets.ACR_LOGIN_SERVER }} --image frontend:${{ github.sha }} ./frontend
+
+      - name: Deploy Frontend to Azure
+        uses: azure/container-apps-deploy-action@v1
+        with:
+          name: langscope-ui
+          resourceGroup: LangScopeRG
+          imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }}
