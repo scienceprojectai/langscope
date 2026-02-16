@@ -13,17 +13,14 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Get Your Code
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 2. Log in to Azure
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # 3. Log in to your Container Registry
       - name: Login to ACR
         run: az acr login --name ${{ secrets.ACR_LOGIN_SERVER }}
 
@@ -44,11 +41,14 @@ jobs:
           imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}
           targetPort: 8000
           ingress: external
-          environmentVariables: MONGO_URI=${{ secrets.MONGO_URI }} AZURE_STORAGE_CONN_STR=${{ secrets.AZURE_STORAGE_CONN }} NO_AUTH_MODE=true
+          # Simplified formatting to prevent script errors
+          environmentVariables: >-
+            MONGO_URI=${{ secrets.MONGO_URI }}
+            AZURE_STORAGE_CONN_STR=${{ secrets.AZURE_STORAGE_CONN }}
+            NO_AUTH_MODE=true
 
       # --- FRONTEND (UI) ---
       - name: Build & Push Frontend
-        # We create a temporary .env file so the API URL is baked into the React build
         run: |
           echo "VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }}" > ./frontend/.env
           echo "VITE_LOCAL_AUTH_MODE=true" >> ./frontend/.env
