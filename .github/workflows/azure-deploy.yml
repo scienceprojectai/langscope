@@ -17,7 +17,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # 2. Log in to Azure (Uses the Secret you just added)
+      # 2. Log in to Azure
       - name: Azure Login
         uses: azure/login@v1
         with:
@@ -33,33 +33,33 @@ jobs:
         with:
           context: ./Algorithm
           push: true
-          # Tags the image with the specific commit ID so we know exactly what version is running
           tags: ${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}
 
-      - name: Deploy Backend to Azure
+      - name: Deploy Backend API
         uses: azure/container-apps-deploy-action@v1
         with:
-          name: langscope-api
+          containerAppName: langscope-api
           resourceGroup: LangScopeRG
+          containerAppEnvironment: LangScopeEnv
           imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}
-          # Injects your database keys securely
-          environmentVariables: |
-            MONGO_URI=${{ secrets.MONGO_URI }}
-            AZURE_STORAGE_CONN_STR=${{ secrets.AZURE_STORAGE_CONN }}
-            NO_AUTH_MODE=true
+          targetPort: 8000
+          ingress: external
+          environmentVariables: MONGO_URI=${{ secrets.MONGO_URI }} AZURE_STORAGE_CONN_STR=${{ secrets.AZURE_STORAGE_CONN }} NO_AUTH_MODE=true
 
       # --- FRONTEND (UI) ---
       - name: Build & Push Frontend
-        # We perform a trick here: we bake the API URL into the React app during the build
+        # We create a temporary .env file so the API URL is baked into the React build
         run: |
           echo "VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }}" > ./frontend/.env
           echo "VITE_LOCAL_AUTH_MODE=true" >> ./frontend/.env
-          
           az acr build --registry ${{ secrets.ACR_LOGIN_SERVER }} --image frontend:${{ github.sha }} ./frontend
 
-      - name: Deploy Frontend to Azure
+      - name: Deploy Frontend UI
         uses: azure/container-apps-deploy-action@v1
         with:
-          name: langscope-ui
+          containerAppName: langscope-ui
           resourceGroup: LangScopeRG
+          containerAppEnvironment: LangScopeEnv
           imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/frontend:${{ github.sha }}
+          targetPort: 80
+          ingress: external
