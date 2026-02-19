@@ -64,6 +64,17 @@ jobs:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
             
+            # 1. Extract the ACR name (removes the .azurecr.io part)
+            ACR_NAME=$(echo "${{ secrets.ACR_LOGIN_SERVER }}" | cut -d'.' -f1)
+            
+            # 2. Ensure Admin User is enabled on your registry
+            az acr update --name $ACR_NAME --admin-enabled true
+            
+            # 3. Fetch the registry username and password dynamically
+            ACR_USERNAME=$(az acr credential show --name $ACR_NAME --query "username" -o tsv)
+            ACR_PASSWORD=$(az acr credential show --name $ACR_NAME --query "passwords[0].value" -o tsv)
+            
+            # 4. Create the app and explicitly pass the registry credentials
             az containerapp create \
               --name langscope-ui \
               --resource-group LangScopeRG \
@@ -72,4 +83,7 @@ jobs:
               --target-port 80 \
               --ingress external \
               --min-replicas 1 \
-              --max-replicas 1
+              --max-replicas 1 \
+              --registry-server ${{ secrets.ACR_LOGIN_SERVER }} \
+              --registry-username $ACR_USERNAME \
+              --registry-password $ACR_PASSWORD
