@@ -1,9 +1,9 @@
-# Stage 1: Build the React App
-# Stage 1: Build the React App
 FROM node:20-alpine AS build
 WORKDIR /app
+
 COPY package*.json ./
 RUN npm install
+
 COPY . .
 
 # 1. Catch the arguments passed from GitHub Actions
@@ -11,13 +11,14 @@ ARG VITE_API_BASE_URL
 ARG VITE_SUPABASE_URL
 ARG VITE_SUPABASE_ANON_KEY
 
-# 2. Set them as environment variables so Vite can see them
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-ENV VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY
+# 2. Sledgehammer: Physically write them to a .env file INSIDE the container
+RUN echo "VITE_API_BASE_URL=$VITE_API_BASE_URL" > .env
+RUN echo "VITE_SUPABASE_URL=$VITE_SUPABASE_URL" >> .env
+RUN echo "VITE_SUPABASE_ANON_KEY=$VITE_SUPABASE_ANON_KEY" >> .env
 
 ENV TSC_COMPILE_ON_ERROR=true
 
+# 3. Build the app (Vite will now automatically find and consume the .env file)
 RUN npm run build
 
 # Stage 2: Serve the app with Nginx

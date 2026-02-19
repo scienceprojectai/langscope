@@ -50,12 +50,11 @@ jobs:
       # --- FRONTEND (UI) ---
       - name: Build & Push Frontend
         run: |
-          echo "VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }}" > ./frontend/.env
-          echo "VITE_LOCAL_AUTH_MODE=true" >> ./frontend/.env
           az acr build --registry ${{ secrets.ACR_LOGIN_SERVER }} \
             --image frontend:${{ github.sha }} \
-            --build-arg VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }} \
-            --build-arg VITE_LOCAL_AUTH_MODE=true \
+            --build-arg VITE_API_BASE_URL="${{ secrets.BACKEND_API_URL }}" \
+            --build-arg VITE_SUPABASE_URL="${{ secrets.VITE_SUPABASE_URL }}" \
+            --build-arg VITE_SUPABASE_ANON_KEY="${{ secrets.VITE_SUPABASE_ANON_KEY }}" \
             ./frontend
 
       - name: Deploy Frontend UI (Direct CLI)
