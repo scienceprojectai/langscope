@@ -8,5 +8,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error("Missing Supabase environment variables!");
 }
 
+export const isLocalAuthMode = false;
+
 // Initialize the REAL client
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
