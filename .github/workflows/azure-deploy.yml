@@ -12,6 +12,7 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -41,31 +42,28 @@ jobs:
           imageToDeploy: ${{ secrets.ACR_LOGIN_SERVER }}/backend:${{ github.sha }}
           targetPort: 8000
           ingress: external
-          # Simplified formatting to prevent script errors
           environmentVariables: >-
             MONGO_URI=${{ secrets.MONGO_URI }}
             AZURE_STORAGE_CONN_STR=${{ secrets.AZURE_STORAGE_CONN }}
             NO_AUTH_MODE=true
 
-# --- FRONTEND (UI) ---
+      # --- FRONTEND (UI) ---
       - name: Build & Push Frontend
         run: |
           echo "VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }}" > ./frontend/.env
           echo "VITE_LOCAL_AUTH_MODE=true" >> ./frontend/.env
-          # Added --build-arg to handle potential environment issues
           az acr build --registry ${{ secrets.ACR_LOGIN_SERVER }} \
             --image frontend:${{ github.sha }} \
             --build-arg VITE_API_BASE_URL=${{ secrets.BACKEND_API_URL }} \
             --build-arg VITE_LOCAL_AUTH_MODE=true \
             ./frontend
 
-- name: Deploy Frontend UI (Direct CLI)
+      - name: Deploy Frontend UI (Direct CLI)
         uses: azure/CLI@v1
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
             
-            # Create or Update the Container App directly
             az containerapp create \
               --name langscope-ui \
               --resource-group LangScopeRG \
