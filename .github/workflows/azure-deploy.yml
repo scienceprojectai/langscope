@@ -46,6 +46,7 @@ jobs:
             MONGO_URI=${{ secrets.MONGO_URI }}
             AZURE_STORAGE_CONN_STR=${{ secrets.AZURE_STORAGE_CONN }}
             NO_AUTH_MODE=true
+            CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}
 
       # --- FRONTEND (UI) ---
       - name: Build & Push Frontend
