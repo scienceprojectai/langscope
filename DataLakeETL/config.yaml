@@ -1,0 +1,12 @@
+pipeline:
+  threads: 3
+  target_domains: "*" # Use "*" for all active domains
+  datalake_container: "raw-data"
+
+limits:
+  default_max_mb: 500 # Global cap for all downloads
+
+downstream_tasks:
+  trigger_battle_arena: true
+  battle_arena_job_name: "langscope-battle-job"
+  resource_group: "LangScopeRG"

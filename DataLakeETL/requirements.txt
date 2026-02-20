@@ -1,0 +1,5 @@
+pymongo==4.6.1
+azure-storage-blob==12.19.0
+pyyaml==6.0.1
+datasets==2.17.0
+requests==2.31.0
