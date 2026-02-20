@@ -147,6 +147,11 @@ Rate limit headers are included in all responses.
         redoc_url="/redoc",
         lifespan=lifespan,
     )
+
+    # Add custom middleware (order matters - first added is outermost)
+    app.add_middleware(RequestLoggingMiddleware)
+    app.add_middleware(RateLimitMiddleware)
+    app.add_middleware(AuthMiddleware)
     
     # Add CORS middleware
     # Note: allow_origins with credentials cannot use "*" - must specify origins
@@ -159,11 +164,7 @@ Rate limit headers are included in all responses.
         allow_headers=["*"],
     )
     
-    # Add custom middleware (order matters - first added is outermost)
-    app.add_middleware(RequestLoggingMiddleware)
-    app.add_middleware(RateLimitMiddleware)
-    app.add_middleware(AuthMiddleware)
-    
+   
     # Include routers
     app.include_router(auth_router)
     
